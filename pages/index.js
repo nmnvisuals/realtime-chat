@@ -53,15 +53,7 @@ async function signout() {
  
 }
 
-useEffect(()=>{
 
-  const verified = localStorage.getItem('supabase.auth.token');
-  
-  if(verified){
-    console.log(verified)
-    setLoggedIn(true);
-  }
-})
 useEffect(()=>{
 
  
