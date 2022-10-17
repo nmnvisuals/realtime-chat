@@ -164,7 +164,7 @@ async function signUpwithEmail(){
         <link rel="icon" href="/favicon.ico" />
       </Head>
 <img src="/sc-logo.svg" className={styles.head_logo} />
-<div className={styles.signout}>Sign Out</div>
+<div className={styles.signout} onClick={signOut}>Sign Out</div>
 <div className={styles.overlay}></div>
 {!loggedIn? 
 <div className={styles.tools}>
