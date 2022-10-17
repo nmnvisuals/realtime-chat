@@ -33,13 +33,13 @@ async function signInWithFacebook(){
 
   if(user){
     setLoggedIn(true)
-    console.log(user);
+    
     router.push('/');
   }
 
   else{
     setLoggedIn(false);
-    console.log(error)
+    
   }
    
   
@@ -49,7 +49,7 @@ async function signInWithFacebook(){
 
 const eter = useRef();
 async function signout() {
-  const { error } = await supabase.auth.signOut().then(err=>{console.log(err)});
+  const { error } = await supabase.auth.signOut();
  
 }
 
@@ -58,7 +58,7 @@ useEffect(()=>{
 
  
 const user = supabase.auth.user();
-  console.log(user)
+ 
   if(user && user.aud === "authenticated"){
     setLoggedIn(true);
 
@@ -104,7 +104,7 @@ async function readData(){
       
     setBubbles((bubbles)=>[...bubbles,<><div key={data.id} className={styles.bubble_cont + " " + (userID === data.mail_address ? styles.right : styles.left)}>{data.u_avatar?<img className={styles.pp + " " + styles.re} src={data.u_avatar}></img>:<div className={styles.defAvat}>{data.mail_address.substring(0,1)}</div>}<div className={styles.chat + " " + (userID === data.mail_address ? styles.user : styles.friend)} ><div className={styles.mnmail + " " + styles.f}>{data.mail_address}</div>{data.message}</div> </div></>]) }else{
 
-      console.log('notmatched')
+      
     }
   })
   .subscribe()
@@ -151,7 +151,7 @@ async function getUserData(){
 
  await supabase
   .from('chatsheet')
-  .select('*').then(response=>{console.log(response.data.mail_address)})
+  .select('*').then(response=>{})
 }
 
 
@@ -160,7 +160,7 @@ async function signInwithEmail(){
  await supabase.auth.signIn({
     email: email,
     password: password,
-  }).then((response)=>{console.log(response),setLoggedIn(true)});
+  }).then((response)=>{setLoggedIn(true)});
 
 
 }
@@ -176,7 +176,7 @@ async function signUpwithEmail(){
        first_name: name,
        
      },
-   }).then((response)=>{console.log(response)});
+   }).then((response)=>{});
  
    
  }

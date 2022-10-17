@@ -8,15 +8,7 @@ import { SupabaseClient } from '@supabase/supabase-js' */
 function MyApp({ Component, pageProps }) {
 
 
-  useEffect(()=>{
-
-    const verified = localStorage.getItem('supabase.auth.token');
-    
-    if(verified){
-      console.log(verified)
-      /* setLoggedIn(true); */
-    }
-  })
+  
 
     return(
 
