@@ -69,6 +69,20 @@ router.push('/')
 
 },[])
 
+
+supabase.auth.onAuthStateChange((event, session) => {
+      
+  const user = session?.user || null;
+if(user){
+  setLoggedIn(true)
+}else{
+  setLoggedIn(false)
+}
+  // Save your user to your desired location
+  
+});
+
+
 async function readData(){
 
 
