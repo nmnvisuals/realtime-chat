@@ -1,5 +1,5 @@
 import Head from 'next/head'
-import { useEffect, useState } from 'react'
+import { useEffect, useState,useRef } from 'react'
 import styles from '../styles/Home.module.css'
 import { supabase } from '../utils/supabaseClient'
 import { SendIcon } from '../components/Icon'
@@ -29,7 +29,7 @@ async function signInWithFacebook(){
   
   
 }
-
+const eter = useRef();
 async function signout() {
   const { error } = await supabase.auth.signOut().then(err=>{console.log(err)});
  
@@ -65,7 +65,7 @@ async function readData(){
   .on('INSERT', payload => {
     const data = payload.new;
     
-    
+    eter.current.scrollTop = 999999;
       if(user.email !== data.mail_address) {
       
     setBubbles((bubbles)=>[...bubbles,<><div key={data.id} className={styles.bubble_cont + " " + (userID === data.mail_address ? styles.right : styles.left)}>{data.u_avatar?<img className={styles.pp + " " + styles.re} src={data.u_avatar}></img>:<div className={styles.defAvat}>{data.mail_address.substring(0,1)}</div>}<div className={styles.chat + " " + (userID === data.mail_address ? styles.user : styles.friend)} ><div className={styles.mnmail + " " + styles.f}>{data.mail_address}</div>{data.message}</div> </div></>]) }else{
@@ -92,10 +92,13 @@ if(loggedIn){
 
 },[loggedIn])
 
-
+async function signOut(){
+  const { error } = await supabase.auth.signOut()
+  
+}
 async function insertData(){
   const user = supabase.auth.user();
-  
+  eter.current.scrollTop = eter.current.scrollHeight;
   setBubbles((bubbles)=>[...bubbles,<div key={Math.random(1000)} className={styles.bubble_cont + " " + ( styles.right)}>{avatar?<img className={styles.pp + " " + styles.re} src={avatar}></img>:<div className={styles.defAvat}>{userID.substring(0,1)}</div>}<div className={styles.chat + " " + (styles.user)} ><div className={styles.mnmail + " " + styles.u}>{userID}</div>{message}</div> </div>])
   await supabase
   .from('chatsheet')
@@ -161,6 +164,7 @@ async function signUpwithEmail(){
         <link rel="icon" href="/favicon.ico" />
       </Head>
 <img src="/sc-logo.svg" className={styles.head_logo} />
+<div className={styles.signout}>Sign Out</div>
 <div className={styles.overlay}></div>
 {!loggedIn? 
 <div className={styles.tools}>
@@ -177,7 +181,7 @@ async function signUpwithEmail(){
 </div>
 : ''}
 
-<div className={styles.chatcont}>
+<div className={styles.chatcont} ref={eter}>
 {chatlist && chatlist.slice(0).reverse().map((chat,index) => {
   
 return (<div data-id={chat.id} className={styles.bubble_cont + " " + (userID === chat.mail_address ? styles.right : styles.left)}>{chat.u_avatar?<img className={styles.pp} src={chat.u_avatar}></img>:<div className={styles.defAvat}>{chat.mail_address.substring(0,1)}</div>}<div className={styles.chat + " " + (userID === chat.mail_address ? styles.user : styles.friend)} ><div className={styles.mnmail + " " + (userID === chat.mail_address ? styles.u : styles.f)}>{chat.mail_address}</div>{chat.message}</div></div>)
