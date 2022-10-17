@@ -53,13 +53,18 @@ async function signout() {
  
 }
 
-
 useEffect(()=>{
 
   const verified = localStorage.getItem('supabase.auth.token');
+  
   if(verified){
+    console.log(verified)
     setLoggedIn(true);
   }
+})
+useEffect(()=>{
+
+ 
 const user = supabase.auth.user();
   console.log(user)
   if(user && user.aud === "authenticated"){
