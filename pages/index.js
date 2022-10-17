@@ -5,7 +5,7 @@ import {useRouter} from 'next/router'
 import styles from '../styles/Home.module.css'
 import { supabase } from '../utils/supabaseClient'
 import { SendIcon } from '../components/Icon'
-
+import { useUser, useSessionContext } from '@supabase/auth-helpers-react'
 export default function Home() {
 
 
@@ -20,8 +20,11 @@ const [email,setEmail] = useState('');
 const [password,setPassword] = useState('');
 const [name,setName] = useState('');
 const [toggle,setToggle] = useState(false);
-
-
+/* const { isLoading, session, error, supabaseClient } = useSessionContext()
+  
+  */
+ /*  const userR = supabase.auth.session(); */
+ const router = useRouter();
 async function signInWithFacebook(){
 
   const {user,error} = await supabase.auth.signIn({
@@ -42,6 +45,8 @@ async function signInWithFacebook(){
   
   
 }
+
+
 const eter = useRef();
 async function signout() {
   const { error } = await supabase.auth.signOut().then(err=>{console.log(err)});
@@ -51,17 +56,18 @@ async function signout() {
 
 useEffect(()=>{
 
-
-  const user = supabase.auth.user();
+const user = supabase.auth.user();
+  console.log(user)
   if(user && user.aud === "authenticated"){
     setLoggedIn(true);
+
   }
   else{
-
+router.push('/')
   }
 
 },[])
-const router = useRouter();
+
 async function readData(){
 
 
