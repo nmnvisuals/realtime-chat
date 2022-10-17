@@ -1,5 +1,7 @@
 import Head from 'next/head'
 import { useEffect, useState,useRef } from 'react'
+
+import {useRouter} from 'next/router'
 import styles from '../styles/Home.module.css'
 import { supabase } from '../utils/supabaseClient'
 import { SendIcon } from '../components/Icon'
@@ -24,7 +26,18 @@ async function signInWithFacebook(){
 
   const {user,error} = await supabase.auth.signIn({
     provider: 'facebook',
-  }).then(()=>{setLoggedIn(true)})
+  })
+
+  if(user){
+    setLoggedIn(true)
+    console.log(user);
+    router.push('/');
+  }
+
+  else{
+    setLoggedIn(false);
+    console.log(error)
+  }
    
   
   
@@ -48,7 +61,7 @@ useEffect(()=>{
   }
 
 },[])
-
+const router = useRouter();
 async function readData(){
 
 
@@ -93,7 +106,9 @@ if(loggedIn){
 },[loggedIn])
 
 async function signOut(){
-  const { error } = await supabase.auth.signOut()
+  const { error } = await supabase.auth.signOut().then(()=>{
+    router.reload();
+  })
   
 }
 async function insertData(){
