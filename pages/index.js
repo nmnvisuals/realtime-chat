@@ -254,6 +254,16 @@ async function signUpwithEmail(){
 <div className={styles.overlay}></div>
 {!loggedIn? 
 <div className={styles.tools}>
+
+
+<button className={styles.fb} onClick={signInWithFacebook}>
+<svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
+width="30" height="30"
+viewBox="0 0 30 30"
+fill='#fff'>    <path d="M15,3C8.373,3,3,8.373,3,15c0,6.016,4.432,10.984,10.206,11.852V18.18h-2.969v-3.154h2.969v-2.099c0-3.475,1.693-5,4.581-5 c1.383,0,2.115,0.103,2.461,0.149v2.753h-1.97c-1.226,0-1.654,1.163-1.654,2.473v1.724h3.593L19.73,18.18h-3.106v8.697 C22.481,26.083,27,21.075,27,15C27,8.373,21.627,3,15,3z"></path></svg>
+  
+  Sign in with Facebook</button>
+<h2>Or</h2>
   <div className={styles.toggle + " " + (toggle ? styles.active_toggle : '')} onClick={toggler}><div className={styles.signin}>SignIn</div><div className={styles.signup}>SignUp</div></div>
 {toggle ? <input className={styles.input} name="full_name" type="text" value={name} onChange={e=>{setName(e.target.value),setError()}} placeholder="Enter your Name"></input>: ''}
 <input className={styles.input} name="email" type="email" value={email} onChange={e=>{setEmail(e.target.value),setError()}} placeholder="Enter your Email"></input>
@@ -262,8 +272,7 @@ async function signUpwithEmail(){
 {isError ? <p className={styles.error}>{isError}</p>:''}
 {!toggle ? <button onClick={signInwithEmail}>Sign In</button>: ''}
 {toggle ? <button onClick={signUpwithEmail}>Sign Up</button>: ''}
-<h2>Or</h2>
-<button onClick={signInWithFacebook}>Sign in with Facebook</button>
+
 
 
 </div>

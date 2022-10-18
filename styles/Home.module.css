@@ -358,6 +358,15 @@
     top: 18px;
 }
 
+.fb {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
 .error {
     color: red;
     font-size: 12px;
