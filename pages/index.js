@@ -97,7 +97,7 @@ async function readData(){
 setIsLoading(true)
   await supabase
   .from('chatsheet')
-  .select('*').order('id', { ascending: false }).limit(6).then(response => {setChat(response.data)})
+  .select('*').order('id', { ascending: false }).limit(20).then(response => {setChat(response.data)})
  }
  function subc(email){
 
