@@ -1,0 +1,33 @@
+.loader {
+    width: 24px;
+    height: 24px;
+    position: relative;
+    border-radius: 200px;
+    margin-left: 10px;
+    animation: rotate 1s normal infinite linear;
+}
+
+.loader .p1,
+.loader .p2 {
+    width: 24px;
+    height: 24px;
+    border-radius: 200px;
+    border-left: 1px solid teal;
+    border-top: 1px solid teal;
+    position: absolute;
+    left: 0px;
+    top: 0px;
+}
+
+.loader .p2 {
+    display: none;
+}
+
+@keyframes rotate {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}

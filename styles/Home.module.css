@@ -358,6 +358,14 @@
     top: 18px;
 }
 
+.error {
+    color: red;
+    font-size: 12px;
+    width: 100%;
+    text-align: left;
+    font-family: Poppins;
+}
+
 .chatcont::-webkit-scrollbar {
     width: 2px;
 }

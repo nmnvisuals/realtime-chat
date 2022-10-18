@@ -6,12 +6,15 @@ import styles from '../styles/Home.module.css'
 import { supabase } from '../utils/supabaseClient'
 import { SendIcon } from '../components/Icon'
 import { useUser, useSessionContext } from '@supabase/auth-helpers-react'
+import Loader from '../components/Loader'
+
 export default function Home() {
 
 
 const [message,setMessage] = useState('');
 const [chatlist,setChat] = useState();
 const [userID,setID] = useState();
+const [isError,setError] = useState();
 const [loading,setLoading] = useState();
 const [avatar,setAvatar] = useState();
 const [bubbles,setBubbles]  = useState([<></>]);
@@ -19,6 +22,7 @@ const [loggedIn,setLoggedIn] = useState(false);
 const [email,setEmail] = useState('');
 const [password,setPassword] = useState('');
 const [name,setName] = useState('');
+const [isLoading,setIsLoading] = useState('');
 const [toggle,setToggle] = useState(false);
 /* const { isLoading, session, error, supabaseClient } = useSessionContext()
   
@@ -26,20 +30,25 @@ const [toggle,setToggle] = useState(false);
  /*  const userR = supabase.auth.session(); */
  const router = useRouter();
 async function signInWithFacebook(){
-
+  setLoading(true)
   const {user,error} = await supabase.auth.signIn({
     provider: 'facebook',
   })
 
   if(user){
     setLoggedIn(true)
-    
+    setLoading(false)
     router.push('/');
+  }
+
+  else if(error){
+    setError(error.message)
+    setLoading(false)
   }
 
   else{
     setLoggedIn(false);
-    
+    setLoading(false)
   }
    
   
@@ -85,7 +94,7 @@ if(user){
 
 async function readData(){
 
-
+setIsLoading(true)
   await supabase
   .from('chatsheet')
   .select('*').order('id', { ascending: false }).limit(6).then(response => {setChat(response.data)})
@@ -98,7 +107,7 @@ async function readData(){
   .from('chatsheet')
   .on('INSERT', payload => {
     const data = payload.new;
-    
+    setIsLoading(false)
     eter.current.scrollTop = 999999;
       if(user.email !== data.mail_address) {
       
@@ -127,12 +136,15 @@ if(loggedIn){
 },[loggedIn])
 
 async function signOut(){
+  
   const { error } = await supabase.auth.signOut().then(()=>{
     router.reload();
   })
   
+  
 }
 async function insertData(){
+  setIsLoading(true)
   const user = supabase.auth.user();
   eter.current.scrollTop = eter.current.scrollHeight;
   setBubbles((bubbles)=>[...bubbles,<div key={Math.random(1000)} className={styles.bubble_cont + " " + ( styles.right)}>{avatar?<img className={styles.pp + " " + styles.re} src={avatar}></img>:<div className={styles.defAvat}>{userID.substring(0,1)}</div>}<div className={styles.chat + " " + (styles.user)} ><div className={styles.mnmail + " " + styles.u}>{userID}</div>{message}</div> </div>])
@@ -142,32 +154,52 @@ async function insertData(){
     { message: message, isMedia: false , mail_address : user.email, username : user.id, u_avatar : user.user_metadata.picture   },
   ]).then((response)=>{if(response.status === 201){
     
+    setIsLoading(false)
     
-    
-    setMessage('')}})
+    setMessage('')}
+  
+  else{
+    setIsLoading(false)
+  }
+  })
 
 }
 async function getUserData(){
-
+  setIsLoading(true)
  await supabase
   .from('chatsheet')
-  .select('*').then(response=>{})
+  .select('*').then(response=>{
+    setIsLoading(false)
+  })
 }
 
 
 async function signInwithEmail(){
-
- await supabase.auth.signIn({
+  setIsLoading(true)
+ const {user,session,error} = await supabase.auth.signIn({
     email: email,
     password: password,
-  }).then((response)=>{setLoggedIn(true)});
+  })
+
+  if(user || session){
+    setLoggedIn(true)
+    setIsLoading(false)
+  }
+  else if(error){
+    
+    setError(error.message)
+    setIsLoading(false)
+  }
+  else{
+    setIsLoading(false)
+  }
 
 
 }
 
 async function signUpwithEmail(){
-
-  await supabase.auth.signUp({
+  setIsLoading(true)
+  const {user,session,error} = await supabase.auth.signUp({
      email: email,
      password: password,
    },
@@ -176,7 +208,25 @@ async function signUpwithEmail(){
        first_name: name,
        
      },
-   }).then((response)=>{});
+   })
+
+   if(user || session){
+    setError('Sent Confirmation Email, Confirm then Login');
+    setIsLoading(false)
+  }
+  else if(error){
+    if(error.status == 429){
+    setError('Email already exists')
+      
+    }else{
+    
+    setError(error.message)}
+    setIsLoading(false)
+  }
+  else{
+    setIsLoading(false)
+  }
+
  
    
  }
@@ -205,9 +255,11 @@ async function signUpwithEmail(){
 {!loggedIn? 
 <div className={styles.tools}>
   <div className={styles.toggle + " " + (toggle ? styles.active_toggle : '')} onClick={toggler}><div className={styles.signin}>SignIn</div><div className={styles.signup}>SignUp</div></div>
-{toggle ? <input className={styles.input} name="full_name" type="text" value={name} onChange={e=>{setName(e.target.value)}} placeholder="Enter your Name"></input>: ''}
-<input className={styles.input} name="email" type="email" value={email} onChange={e=>{setEmail(e.target.value)}} placeholder="Enter your Email"></input>
-<input className={styles.input} name="password" type="password" value={password} onChange={e=>{setPassword(e.target.value)}} placeholder="Enter Password"></input>
+{toggle ? <input className={styles.input} name="full_name" type="text" value={name} onChange={e=>{setName(e.target.value),setError()}} placeholder="Enter your Name"></input>: ''}
+<input className={styles.input} name="email" type="email" value={email} onChange={e=>{setEmail(e.target.value),setError()}} placeholder="Enter your Email"></input>
+<input className={styles.input} name="password" type="password" value={password} onChange={e=>{setPassword(e.target.value),setError()}} placeholder="Enter Password"></input>
+<Loader loader={isLoading}/>
+{isError ? <p className={styles.error}>{isError}</p>:''}
 {!toggle ? <button onClick={signInwithEmail}>Sign In</button>: ''}
 {toggle ? <button onClick={signUpwithEmail}>Sign Up</button>: ''}
 <h2>Or</h2>
